@@ -1,5 +1,8 @@
 {
     "python.analysis.extraPaths": [
         "./Libraries/ms5837-python/ms5837"
-    ]
+    ],
+    "files.associations": {
+        "iostream": "cpp"
+    }
 }

@@ -2,15 +2,15 @@
 #include <fstream>
 #include <string>
 #include <ctime>
-#include "Depth.hpp"
-#include "Tempearture.hpp"
-#include "phSensor.hpp"
+#include "Depth.cpp"
+#include "Tempearture.cpp"
+#include "phSensor.cpp"
 
 std::string getCurrentDateTime() {
     time_t now = time(0);
     tm* localTime = localtime(&now);
     char buffer[80];
-    strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", localTime);
+    strftime(buffer, sizeof(buffer), "%H:%M:%S", localTime);
     return std::string(buffer);
 }
 
@@ -33,7 +33,7 @@ void start() {
         std::cerr << "Error opening file for writing: " << dataFile << std::endl;
         return;
     }
-
+    outFile << "Time,Depth(m),Temperature(F),Altitude"
     DepthSens depthSensor;
     TempSensor temperatureSensor;
     while (true) {
@@ -45,11 +45,11 @@ void start() {
         std::string currentTime = getCurrentDateTime();
 
         // Write data to the file
-        outFile << currentTime << " - Depth: " << depth 
-                << "m, Temperature: " << temperatureF 
-                << "F, Altitude: " << altitude << "m" << std::endl;
+        outFile << currentTime << "," << depth 
+                << "," << temperatureF 
+                << "," << altitude << " " << std::endl;
 
-        // std::this_thread::sleep_for(std::chrono::seconds(5)); // e.g., 5-second delay
+         std::this_thread::sleep_for(std::chrono::seconds(4)); // e.g., 5-second delay
     }
 
     // Close the file when done

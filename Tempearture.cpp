@@ -1,5 +1,5 @@
 #include <iostream>
-#include "tsys01.h" 
+#include "Libraries/TSYS01.h" 
 
 class TempSensor {
 private:
@@ -22,11 +22,11 @@ public:
                 return temperatureF;
             } else {
                 std::cerr << "Error reading temperature" << std::endl;
-                return 0.0; 
+                return -404; 
             }
         } else {
             std::cerr << "Sensor initialization failed" << std::endl;
-            return 0.0;
+            return -400;
         }
     }
 };

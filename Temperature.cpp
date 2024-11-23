@@ -1,9 +1,10 @@
 #include <iostream>
-#include "Libraries/TSYS01.h" 
+#include "Libraries/BlueRobotics_TSYS01_Library-master/TSYS01.h" 
+#include <Wire.h>
 
 class TempSensor {
 private:
-    tsys01 sensor;  
+    TSYS01 sensor;  
     double temperatureF;
     bool temperatureSuccess;
 

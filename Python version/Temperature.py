@@ -12,4 +12,7 @@ class TempSensor(object):
                 tempeartureF = sensor.temperature(tsys01.UNITS_Farenheit)
                 return tempeartureF
             else:
-                print("Error")
+                print("Error Temperature")
+                return 5000
+        else:
+            print("Failed Failed")

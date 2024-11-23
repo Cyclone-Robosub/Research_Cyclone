@@ -3,7 +3,7 @@
 #include <string>
 #include <ctime>
 #include "Depth.cpp"
-#include "Tempearture.cpp"
+#include "Temperature.cpp"
 #include "phSensor.cpp"
 
 std::string getCurrentDateTime() {

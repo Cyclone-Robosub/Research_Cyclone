@@ -14,12 +14,14 @@ class DepthSens:
         if(sensor.read(depthSensor.OSR_2048)):
             depth = sensor.depth()
         else:
+            depth = 10000000
             print("failed depth reading")
         return depth
     def getAlt(self):
         if(sensor.read()):
             altitude = sensor.altitude()
         else:
+            altitude = 1000000
             print("failed depth reading")
         return altitude
     def updateSensor(self):
@@ -27,5 +29,7 @@ class DepthSens:
     def getPressure(self):
         if(sensor.read(depthSensor.OSR_2048)):
             return sensor.pressure(), sensor.pressure(depthSensor.UNITS_atm)
+        else:
+            return 86868686, 86868686
     
     

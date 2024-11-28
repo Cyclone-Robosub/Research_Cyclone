@@ -8,11 +8,12 @@ include_directories(.
         lib)
 
 add_executable(Research_Cyclone
-    main.cpp
+        StartandSend.cpp
     Depth.cpp
     phSensor.cpp
-    Tempearture.cpp
+    Temperature.cpp
     Libraries
+        GetSensorData.cpp
 )
 find_package(nlohmann_json 3.11.3 REQUIRED)
 

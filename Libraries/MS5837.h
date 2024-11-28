@@ -37,7 +37,7 @@ THE SOFTWARE.
 #ifndef MS5837_H_BLUEROBOTICS
 #define MS5837_H_BLUEROBOTICS
 
-#include <Wire.h>
+//#include <Wire.h>
 
 class MS5837 {
 public:

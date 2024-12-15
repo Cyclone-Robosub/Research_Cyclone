@@ -1,37 +1,31 @@
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <ctime>
-#include "Depth.cpp"
-#include "Temperature.cpp"
-#include "phSensor.cpp"
-void setup() {
-    Serial.begin(9600);
-    Serial.println("Arduino is ready");
-}
-void loop() {
-    if (Serial.available() > 0) {
-        String data = Serial.readStringUntil('\n');
-        if(data == "start"){
-          startSensors();
-          while(data != "stop"){
-          	startReading();
-          }
-        }
-}
+#include <TSYS01.h>
+#include <Wire.h>
+#include <floatToString.h>
+#include <MS5837.h>
+MS5837 depthReader = MS5837();
+    TSYS01  tempReader = TSYS01();
 void startReading() {
-    if (Serial.available() > 0) {
-        String wantedData = Serial.readStringUntil('\n');
-        depthReader.read();
-        tempReader.read();
+        String wantedData = "all";
+        if(depthReader.init())
+    {
+      depthReader.read();
+      Serial.println("Done");
+    }
+    if(tempReader.init()){
+      tempReader.read();
+    }
+        
+        String depthString = String(depthReader.depth(),5);
+        String altString = String(depthReader.altitude(),5);
+        String tempStringC = String(tempReader.temperature(),5); 
         if(wantedData == "all"){
-          Serial.println(depthReader.depth()+","+tempReader.temperature()+","+depthReader.altitude());
+         Serial.println(depthString+","+altString +","+ tempStringC);
         }
         if(wantedData == "depth"){
           Serial.println(depthReader.depth());
         }
         if(wantedData == "temp"){
-          Serial.println(tempReader.temperature());
+        //  Serial.println(tempReader.temperature());
         }
         if(wantedData == "ph"){
 
@@ -40,19 +34,32 @@ void startReading() {
           Serial.println(depthReader.altitude());
         }
 
-    }
-
-    // Close the file when done
-    outFile.close();
+    
 }
 
 void startSensors() {
-  	MS5837 depthReader = new MS5837();
-    TSYS01 tempReader = new TSYS01();
     depthReader.setModel(MS5837::MS5837_30BA);
     depthReader.setFluidDensity(997);
     tempReader.init();
-
-
+    
     return 0;
 }
+void setup() {
+    Serial.begin(9600);
+    Wire.begin();
+    startSensors();
+   // loop();
+}
+void loop() {
+    String givenString = Serial.readStringUntil('.');
+    if(givenString == "start"){
+    while(givenString != "stop"){
+      givenString = Serial.readStringUntil('.');
+      delay(300);
+      startReading();
+      givenString = Serial.readStringUntil('.');
+    }
+    }
+}
+
+

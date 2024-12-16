@@ -14,10 +14,12 @@ void startReading() {
       tempReader.read();
     }
     String tempStringC;
-        if(tempReader.temperature() == 0)
+        if(tempReader.temperature() < -1000)
         {
+          Serial.println("No Got it");
            tempStringC = String(depthReader.temperature(),5); 
         }else {
+          Serial.println("Got it");
           tempStringC = String(tempReader.temperature(),5);
         }
         String depthString = String(depthReader.depth(),5);
@@ -46,7 +48,12 @@ void startReading() {
 void startSensors() {
     depthReader.setModel(MS5837::MS5837_30BA);
     depthReader.setFluidDensity(997);
-    tempReader.init();
+    if(depthReader.init()){
+      Serial.println("Depth connected");
+    }
+    if(tempReader.init()){
+      Serial.println("Temperature connected");
+    }
     
     return 0;
 }
@@ -61,7 +68,7 @@ void loop() {
     if(givenString == "start"){
     while(givenString != "stop"){
       givenString = Serial.readStringUntil('.');
-      //delay(100);
+      delay(10);
       startReading();
       givenString = Serial.readStringUntil('.');
     }

@@ -23,8 +23,8 @@ def main():
             if run_path.stdout == "failed":
                 print("Failed to start recording")
             else:
-                commandControl = "start"
-                while commandControl != "stop":
+                commandControl = "start."
+                while commandControl != "stop.":
                     ser.write(run_path.stdout)
                     commandControl = input()
 

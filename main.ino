@@ -7,19 +7,25 @@ MS5837 depthReader = MS5837();
 void startReading() {
         String wantedData = "all";
         if(depthReader.init())
-    {
+        {
       depthReader.read();
-      Serial.println("Done");
-    }
+        }
     if(tempReader.init()){
       tempReader.read();
     }
-        
+    String tempStringC;
+        if(tempReader.temperature() == 0)
+        {
+           tempStringC = String(depthReader.temperature(),5); 
+        }else {
+          tempStringC = String(tempReader.temperature(),5);
+        }
         String depthString = String(depthReader.depth(),5);
         String altString = String(depthReader.altitude(),5);
-        String tempStringC = String(tempReader.temperature(),5); 
+        String pressureString = String(depthReader.pressure(), 5);
+       
         if(wantedData == "all"){
-         Serial.println(depthString+","+altString +","+ tempStringC);
+         Serial.println(depthString+","+altString +","+ tempStringC +"," +pressureString);
         }
         if(wantedData == "depth"){
           Serial.println(depthReader.depth());
@@ -55,7 +61,7 @@ void loop() {
     if(givenString == "start"){
     while(givenString != "stop"){
       givenString = Serial.readStringUntil('.');
-      delay(300);
+      //delay(100);
       startReading();
       givenString = Serial.readStringUntil('.');
     }

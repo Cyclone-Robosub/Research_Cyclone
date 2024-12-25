@@ -16,10 +16,10 @@ void startReading() {
     String tempStringC;
         if(tempReader.temperature() < -1000)
         {
-          Serial.println("No Got it");
+         // Serial.println("No Got it");
            tempStringC = String(depthReader.temperature(),5); 
         }else {
-          Serial.println("Got it");
+         // Serial.println("Got it");
           tempStringC = String(tempReader.temperature(),5);
         }
         String depthString = String(depthReader.depth(),5);
@@ -27,7 +27,7 @@ void startReading() {
         String pressureString = String(depthReader.pressure(), 5);
        
         if(wantedData == "all"){
-         Serial.println(depthString+","+altString +","+ tempStringC +"," +pressureString);
+         Serial.println(depthString+","+ altString +","+ tempStringC +"," +pressureString);
         }
         if(wantedData == "depth"){
           Serial.println(depthReader.depth());

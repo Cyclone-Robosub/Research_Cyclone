@@ -1,0 +1,14 @@
+build
+.vscode
+.vscode/settings.json
+.vscode/c_cpp_properties.json
+.vscode/tasks.json
+.vscode/launch.json
+.vscode/extensions.json
+.vscode/cquery_cached_index/
+.vscode/cmake-tools-kit.json
+.vscode/cmake-kits.json
+.vscode/cmake-variants.json
+.vscode/cmake-build-debug.json
+.vscode/cmake-build-release.json
+.vscode/cmake-build-relwithdebinfo.json

@@ -9,7 +9,21 @@
 
 #include "StartandSend.cpp"
 
-void uploadDataSet(std::string path) {
+class GetSensorData {
+        private:
+        std::string path;
+        public:
+        GetSensorData(std::string givenPath) {
+                path = givenPath;
+        }
+        std::string getCurrentDateTime() {
+    time_t now = time(0);
+    tm* localTime = localtime(&now);
+    char buffer[80];
+    strftime(buffer, sizeof(buffer), "%H:%M:%S", localTime);
+    return std::string(buffer);
+}
+void uploadDataSet() {
         std::string currentTime = getCurrentDateTime();
         std::string ReadDataLine;
         getline(std::cin, ReadDataLine);
@@ -20,3 +34,4 @@ void uploadDataSet(std::string path) {
         std::this_thread::sleep_for(std::chrono::seconds(4));
         // e.g., 5-second delay
 }
+};

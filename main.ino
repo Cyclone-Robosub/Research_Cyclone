@@ -1,8 +1,16 @@
-//This is the Arduino Code.
+//Arduino Code
 #include <TSYS01.h>
 #include <Wire.h>
 #include <floatToString.h>
 #include <MS5837.h>
+
+#ifdef USE_PULSE_OUT
+  #include "ph_iso_surveyor.h"       
+  Surveyor_pH_Isolated pH = Surveyor_pH_Isolated(A0);         
+#else
+  #include "ph_surveyor.h"             
+  Surveyor_pH pH = Surveyor_pH(A0);   
+#endif
 MS5837 depthReader = MS5837();
 TSYS01 tempReader = TSYS01();
 void startReading()
@@ -30,7 +38,7 @@ void startReading()
   String altString = String(depthReader.altitude(), 5);
   String pressureString = String(depthReader.pressure(), 5);
 
-  Serial.println("Reading: " + depthString + "," + altString + "," + tempStringC + "," + pressureString);
+  Serial.println("Reading: " + depthString + "," + altString + "," + tempStringC + "," + pressureString + "," + pH.read_ph());
 }
 
 void startSensors()
@@ -43,7 +51,10 @@ void startSensors()
   }
   else
   {
-    Serial.println("failed.")
+    Serial.println("failed.");
+  }
+  if (pH.begin()) {                                     
+    Serial.println("Loaded EEPROM");
   }
 
   return 0;

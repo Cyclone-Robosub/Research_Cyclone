@@ -1,4 +1,5 @@
 build
+
 .vscode
 .vscode/settings.json
 .vscode/c_cpp_properties.json
@@ -12,3 +13,10 @@ build
 .vscode/cmake-build-debug.json
 .vscode/cmake-build-release.json
 .vscode/cmake-build-relwithdebinfo.json
+
+cmake-build-debug
+cmake-build-debug-event-trace
+.idea
+src/install
+.vscode
+src/log

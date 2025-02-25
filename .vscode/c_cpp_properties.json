@@ -1,4 +1,5 @@
 {
+
     "configurations": [
         {
             "name": "Linux",
@@ -6,7 +7,7 @@
                 "${workspaceFolder}/**"
             ],
             "defines": [],
-            "cStandard": "c17",
+            "cStandard": "c20",
             "cppStandard": "gnu++14",
             "intelliSenseMode": "linux-gcc-arm64",
             "browse": {

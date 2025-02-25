@@ -1,3 +1,4 @@
+#Created by Tanishq Dwivedi
 import Libraries.tsys01 as tsys01
 sensor = tsys01.TSYS01() # Use default I2C bus 1
 sensor = tsys01.TSYS01(0) # Specify I2C bus 0

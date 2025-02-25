@@ -4,7 +4,7 @@
   <name>research_cyclone</name>
   <version>0.0.0</version>
   <description>Research Cyclone Package</description>
-  <maintainer email="crs.aggies@gmail.com@example.com">Cyclone RoboSub UC Davis</maintainer>
+  <maintainer email="crs.aggies@gmail.com">Cyclone RoboSub UC Davis</maintainer>
   <license>TODO</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>

@@ -4,6 +4,7 @@
     ],
     
     "files.associations": {
+        ".fantomasignore": "ignore",
         "iostream": "cpp",
         "ctime": "cpp",
         "string": "cpp",
@@ -70,6 +71,30 @@
         "chrono": "cpp",
         "compare": "cpp",
         "concepts": "cpp",
-        "algorithm": "cpp"
-    }
+        "algorithm": "cpp",
+        "filesystem": "cpp",
+        "*.tcc": "cpp",
+        "codecvt": "cpp",
+        "functional": "cpp",
+        "iterator": "cpp",
+        "memory_resource": "cpp",
+        "numeric": "cpp",
+        "random": "cpp",
+        "utility": "cpp",
+        "numbers": "cpp",
+        "semaphore": "cpp",
+        "stop_token": "cpp",
+        "charconv": "cpp",
+        "condition_variable": "cpp",
+        "forward_list": "cpp",
+        "list": "cpp",
+        "map": "cpp",
+        "set": "cpp",
+        "unordered_set": "cpp",
+        "format": "cpp",
+        "span": "cpp",
+        "cinttypes": "cpp",
+        "typeindex": "cpp"
+    },
+    "ros.distro": "jazzy"
 }

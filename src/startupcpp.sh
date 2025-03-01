@@ -3,10 +3,11 @@
 
 # Change directory to src
 # Build the package
+source /opt/ros/jazzy/setup.bash
 colcon build
 
 # Source ROS setup files
 source /opt/ros/jazzy/setup.bash
 source install/setup.bash
-ros2 run research_cyclone research_node
+ros2 run research_cyclone researchcnode
 

@@ -24,10 +24,10 @@ class GetSensorData : public rclcpp::Node {
   // auto topic_callback;
 
  public:
-  GetSensorData(std::string givenPath) : Node("research_node") {
+  GetSensorData(std::string givenPath) : Node("researchcnode") {
     outFile.open(givenPath, std::ofstream::app);
     subscription_ = this->create_subscription<std_msgs::msg::String>(
-        "researchSensors", 10,
+        "researchSensorsData", 10,
         std::bind(&GetSensorData::uploadDataSet, this, std::placeholders::_1));
   }
   void uploadDataSet(const std_msgs::msg::String::SharedPtr msg) {

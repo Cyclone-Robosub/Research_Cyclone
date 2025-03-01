@@ -16,14 +16,17 @@ import string
 class MinimalPublisher(Node):
 
     def __init__(self):
-        super().__init__('research_node')
-        self.publisher_ = self.create_publisher(String, 'researchSensors', 10)
+        super().__init__('research_python_node')
+        self.rpublisher_ = self.create_publisher(String, 'researchSensorsData', 10)
+        self.depthpublisher = self.create_publisher(String, 'depthSensorData', 10)
         
     #publishing the actual line of the sensor data from Arduino with ROS
     def publish_line(self, line):
         msg = String()
         msg.data = line
-        self.publisher_.publish(msg)
+        # need to parse it into a variable -> depth
+        self.rpublisher_.publish(msg)
+        self.depthpublisher.publish(msg)
         print(line)
 #This compile command will build, use the ROS source library files, and then
 #execute. Make sure that this bash script is inside a thread, because the bash
@@ -35,14 +38,14 @@ def compileFunction():
 
 #start the c++ files before we start the ROS node and publish the data
 def main():
-        #ser = serial.Serial('/dev/ttyACM0', 9600, timeout=0.5)
-       # ser.reset_input_buffer()
-       # line = ser.readline().decode('utf-8').rstrip()
-      #  if line == "All sensors are ready.":
-        #    ser.write("start.\n")
-      #  else:
-        #    print("Failure of sensors")
-        #    return
+        ser = serial.Serial('/dev/ttyACM0', 9600, timeout=0.5)
+        ser.reset_input_buffer()
+        line = ser.readline().decode('utf-8').rstrip()
+        if line == "All sensors are ready.":
+            ser.write("start.\n")
+        else:
+            print("Failure of sensors")
+            return
         t1 = threading.Thread(target = compileFunction)
         t1.start()
         rclpy.init()
@@ -53,15 +56,15 @@ def main():
 #Arduino data
 def getData(minimal_publisher):
     while True:
-            #line = ser.readline().decode('utf-8').rstrip()
-            #minimal_publisher.publish_line(line)
-            minimal_publisher.publish_line(f"YAY Time : {time.time()}")
+            line = ser.readline().decode('utf-8').rstrip()
+            minimal_publisher.publish_line(line)
+            #minimal_publisher.publish_line(f"YAY Time : {time.time()}")
 
 
-           # print(line)
+            print(line)
             
                 
-            time.sleep(0.2)
+            time.sleep(0.1)
 
 
 

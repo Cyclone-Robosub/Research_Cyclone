@@ -2,7 +2,6 @@
 #Created by Tanishq Dwivedi
 import time
 import subprocess
-import serial
 import threading
 from pathlib import Path
 import datetime
@@ -39,9 +38,9 @@ def compileFunction():
 
 #start the c++ files before we start the ROS node and publish the data
 def main():
-        ser = serial.Serial('/dev/ttyACM0', 9600, timeout=0.5)
+        ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=0.5)
         ser.reset_input_buffer()
-        line = ser.readline()
+        line = ser.readline().decode('utf-8').rstrip()
         while line != "All sensors are ready.":
             print("Failure of sensors")
             time.sleep(5)
@@ -58,7 +57,7 @@ def main():
 #Arduino data
 def getData(minimal_publisher):
     while True:
-            line = ser.readline().decode('utf-8').strip()
+            line = ser.readline().decode('utf-8').rstrip()
             minimal_publisher.publish_line(line)
             #minimal_publisher.publish_line(f"YAY Time : {time.time()}")
             print(line)

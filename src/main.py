@@ -61,13 +61,8 @@ def getData(minimal_publisher):
     while True:
             line = ser.readline().decode('utf-8').rstrip()
             minimal_publisher.publish_line(line)
-            #minimal_publisher.publish_line(f"YAY Time : {time.time()}")
-            print(line)
-            
-                
+            #minimal_publisher.publish_line(f"YAY Time : {time.time()}")                
             time.sleep(0.1)
 
 
-
-t2 = threading.Thread(target = main)
-t2.start()
+main()

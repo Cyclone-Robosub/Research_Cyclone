@@ -46,7 +46,7 @@ def main():
         line = ser.readline().decode('utf-8').rstrip()
         while line != "All sensors are ready.":
             print("Failure of sensors")
-            time.sleep(5)
+            time.sleep(3)
             line = ser.readline().decode('utf-8').strip()
             print(line)
         stringcmdlol = "start."
@@ -58,6 +58,7 @@ def main():
 #The ROS Node will keep running and this function will read off the 
 #Arduino data
 def getData(minimal_publisher):
+    print("started reading data")
     while True:
             line = ser.readline().decode('utf-8').rstrip()
             minimal_publisher.publish_line(line)

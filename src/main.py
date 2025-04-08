@@ -47,7 +47,8 @@ def main():
             time.sleep(5)
             line = ser.readline().decode('utf-8').strip()
             print(line)
-        ser.write("start.\n")
+        stringcmdlol = "start."
+        ser.write(stringcmdlol.encode())
         t1 = threading.Thread(target = compileFunction)
         t1.start()
         rclpy.init()

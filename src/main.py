@@ -45,7 +45,7 @@ def main():
         while line != "All sensors are ready.":
             print("Failure of sensors")
             time.sleep(5)
-            line = ser.readline()
+            line = ser.readline().decode('utf-8').strip()
             print(line)
         ser.write("start\n")
         t1 = threading.Thread(target = compileFunction)
@@ -61,8 +61,6 @@ def getData(minimal_publisher):
             line = ser.readline()
             minimal_publisher.publish_line(line)
             #minimal_publisher.publish_line(f"YAY Time : {time.time()}")
-
-
             print(line)
             
                 

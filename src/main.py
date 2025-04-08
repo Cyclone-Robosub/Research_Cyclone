@@ -41,11 +41,11 @@ def main():
         ser = serial.Serial('/dev/ttyACM0', 9600, timeout=0.5)
         ser.reset_input_buffer()
         line = ser.readline().decode('utf-8').rstrip()
-        if line == "All sensors are ready.":
-            ser.write("start.\n")
-        else:
+        while line != "All sensors are ready.":
             print("Failure of sensors")
             return
+        else:
+            ser.write('\start\n')
         t1 = threading.Thread(target = compileFunction)
         t1.start()
         rclpy.init()

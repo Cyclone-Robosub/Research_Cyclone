@@ -27,18 +27,20 @@ std::string Setup::getCurrentDate() {
 std::string Setup::start() {
   fs::path currentPath = fs::current_path();
   fs::path parentPath = currentPath.parent_path();
-  std::string something = std::string(parentPath) + "/DataSets/";
+  std::string dataFilePathString = std::string(parentPath) + "/DataSets/";
   std::string date = getCurrentDate();
   std::string updateCommand = "start";
   std::string dataFile = date + ".csv";
   std::fstream outFile;
-  if (!std::filesystem::exists(something + dataFile))
+  if (!std::filesystem::exists(dataFilePathString
+ + dataFile))
   {
-    outFile.open(something + dataFile, std::ofstream::app);
+    outFile.open(dataFilePathString
+   + dataFile, std::ofstream::app);
 
     //Append this for every new file.
     outFile << "Time,Depth(m),Temperature(C),Altitude,Pressure\n";
     outFile.close();
   }
-  return something + dataFile;
+  return dataFilePathString + dataFile;
 }

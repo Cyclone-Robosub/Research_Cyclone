@@ -36,12 +36,11 @@ class MinimalPublisher(Node):
 def compileFunction():
     # Build the package
     subprocess.run(["./startupcpp.sh"], shell=True, executable='/bin/bash')
-
+ser = serial.Serial('/dev/ttyACM0', 9600, timeout=0.2)
 #start the c++ files before we start the ROS node and publish the data
 def main():
         t1 = threading.Thread(target = compileFunction)
         t1.start()
-        ser = serial.Serial('/dev/ttyACM0', 9600, timeout=0.2)
         ser.reset_input_buffer()
         line = ser.readline().decode('utf-8').rstrip()
         while line != "All sensors are ready.":

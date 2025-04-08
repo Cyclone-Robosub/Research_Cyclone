@@ -2,6 +2,7 @@
 #Created by Tanishq Dwivedi
 import time
 import subprocess
+import serial
 import threading
 from pathlib import Path
 import datetime
@@ -40,7 +41,7 @@ def compileFunction():
 def main():
         ser = serial.Serial('/dev/ttyACM0', 9600, timeout=0.5)
         ser.reset_input_buffer()
-        line = ser.readline().decode('utf-8').rstrip()
+        line = ser.readline().decode('utf-8').strip()
         while line != "All sensors are ready.":
             print("Failure of sensors")
             return
@@ -56,7 +57,7 @@ def main():
 #Arduino data
 def getData(minimal_publisher):
     while True:
-            line = ser.readline().decode('utf-8').rstrip()
+            line = ser.readline().decode('utf-8').strip()
             minimal_publisher.publish_line(line)
             #minimal_publisher.publish_line(f"YAY Time : {time.time()}")
 

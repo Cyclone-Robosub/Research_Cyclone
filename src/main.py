@@ -46,6 +46,7 @@ def main():
             print("Failure of sensors")
             time.sleep(5)
             line = ser.readline()
+            print(line)
         ser.write("start\n")
         t1 = threading.Thread(target = compileFunction)
         t1.start()

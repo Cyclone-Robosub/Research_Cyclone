@@ -39,7 +39,9 @@ def compileFunction():
 
 #start the c++ files before we start the ROS node and publish the data
 def main():
-        ser = serial.Serial('/dev/ttyACM0', 9600, timeout=0.5)
+        t1 = threading.Thread(target = compileFunction)
+        t1.start()
+        ser = serial.Serial('/dev/ttyACM0', 9600, timeout=0.2)
         ser.reset_input_buffer()
         line = ser.readline().decode('utf-8').rstrip()
         while line != "All sensors are ready.":
@@ -49,8 +51,6 @@ def main():
             print(line)
         stringcmdlol = "start."
         ser.write(stringcmdlol.encode())
-        t1 = threading.Thread(target = compileFunction)
-        t1.start()
         rclpy.init()
         minimal_publisher = MinimalPublisher()
         rclpy.spin(getData(minimal_publisher))
@@ -62,7 +62,6 @@ def getData(minimal_publisher):
             line = ser.readline().decode('utf-8').rstrip()
             minimal_publisher.publish_line(line)
             #minimal_publisher.publish_line(f"YAY Time : {time.time()}")                
-            time.sleep(0.1)
 
 
 main()

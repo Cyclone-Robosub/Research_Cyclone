@@ -27,7 +27,6 @@ to the file*/
 void GetData(std::string &selectedFile, int argc, char * argv[]){
   rclcpp::init(argc, argv);
   std::shared_ptr<GetSensorData> get_sensor_data = std::make_shared<GetSensorData>(selectedFile);
-  
   rclcpp::spin(get_sensor_data);
   
 }
@@ -38,6 +37,7 @@ int main(int argc, char * argv[]) {
     std::cerr << "NOT sigma sigma boy" << std::endl;
 
     setupfunc(selectedFile);
+    std::cout << selectedFile << std::endl;
     GetData(selectedFile, argc, argv);
     
   //  ros::spin();

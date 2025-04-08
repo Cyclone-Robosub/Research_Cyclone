@@ -46,7 +46,7 @@ def main():
             print("Failure of sensors")
             time.sleep(5)
         else:
-            ser.write('\start\n')
+            ser.write("start\n")
         t1 = threading.Thread(target = compileFunction)
         t1.start()
         rclpy.init()

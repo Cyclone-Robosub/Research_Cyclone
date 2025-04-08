@@ -42,12 +42,21 @@ def main():
         t1 = threading.Thread(target = compileFunction)
         t1.start()
         ser.reset_input_buffer()
-        line = ser.readline().decode('utf-8').rstrip()
-        while line != "All sensors are ready.":
+        i = 1
+        while True:
+            try:
+                line = ser.readline().decode('utf-8').rstrip()
+                break
+            except:
+             ser = serial.serial('/dev/ttyAMC' + i, 9600, timeout=0.2)
+             i += 1
+             if i > 5:
+                 print("Complete Failure for port connecting to arduino.")
+                 return
+        while line != "All sensors are ready." or not line.isalpha():
             print("Failure of sensors")
             time.sleep(3)
             line = ser.readline().decode('utf-8').strip()
-            print(line)
         stringcmdlol = "start."
         ser.write(stringcmdlol.encode())
         rclpy.init()

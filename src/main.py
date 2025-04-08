@@ -39,7 +39,7 @@ def compileFunction():
 
 #start the c++ files before we start the ROS node and publish the data
 def main():
-        ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=0.5)
+        ser = serial.Serial('/dev/ttyACM0', 9600, timeout=0.5)
         ser.reset_input_buffer()
         line = ser.readline().decode('utf-8').rstrip()
         while line != "All sensors are ready.":

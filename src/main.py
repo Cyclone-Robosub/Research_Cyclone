@@ -36,11 +36,13 @@ class MinimalPublisher(Node):
 def compileFunction():
     # Build the package
     subprocess.run(["./startupcpp.sh"], shell=True, executable='/bin/bash')
+
 ser = serial.Serial('/dev/ttyACM0', 9600, timeout=0.2)
 #start the c++ files before we start the ROS node and publish the data
 def main():
         t1 = threading.Thread(target = compileFunction)
         t1.start()
+        ser = serial.Serial('/dev/ttyACM0', 9600, timeout=0.2)
         ser.reset_input_buffer()
         i = 1
         while True:
@@ -48,9 +50,9 @@ def main():
                 line = ser.readline().decode('utf-8').rstrip()
                 break
             except:
-             ser = serial.serial('/dev/ttyAMC' + i, 9600, timeout=0.2)
+             ser = serial.Serial('/dev/ttyAMC' + str(i), 9600, timeout=0.2)
              i += 1
-             if i > 5:
+             if i > 11:
                  print("Complete Failure for port connecting to arduino.")
                  return
         while line != "All sensors are ready." or not line.isalpha():
@@ -72,5 +74,5 @@ def getData(minimal_publisher):
             minimal_publisher.publish_line(line)
             #minimal_publisher.publish_line(f"YAY Time : {time.time()}")                
 
-
+ser = serial.Serial('/dev/ttyACM0', 9600, timeout=0.2)
 main()

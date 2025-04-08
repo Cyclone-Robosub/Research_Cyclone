@@ -45,6 +45,7 @@ def main():
         while line != "All sensors are ready.":
             print("Failure of sensors")
             time.sleep(5)
+            line = ser.readline()
         else:
             ser.write("start\n")
         t1 = threading.Thread(target = compileFunction)

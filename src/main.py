@@ -47,7 +47,7 @@ def main():
             time.sleep(5)
             line = ser.readline().decode('utf-8').strip()
             print(line)
-        ser.write("start\n")
+        ser.write("start.\n")
         t1 = threading.Thread(target = compileFunction)
         t1.start()
         rclpy.init()
@@ -58,7 +58,7 @@ def main():
 #Arduino data
 def getData(minimal_publisher):
     while True:
-            line = ser.readline()
+            line = ser.readline().decode('utf-8').strip()
             minimal_publisher.publish_line(line)
             #minimal_publisher.publish_line(f"YAY Time : {time.time()}")
             print(line)

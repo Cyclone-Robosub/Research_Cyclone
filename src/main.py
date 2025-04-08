@@ -3,6 +3,7 @@
 import time
 import subprocess
 import threading
+import serial
 from pathlib import Path
 import datetime
 from datetime import datetime

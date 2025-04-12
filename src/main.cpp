@@ -34,7 +34,7 @@ int main(int argc, char * argv[]) {
     std::string selectedFile;
 
     //Courtsey of DillRaj
-    std::cerr << "NOT sigma sigma boy" << std::endl;
+    std::cerr << " Courtsey of DillRaj : NOT sigma sigma boy" << std::endl;
 
     setupfunc(selectedFile);
     std::cout << selectedFile << std::endl;

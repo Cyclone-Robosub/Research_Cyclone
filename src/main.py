@@ -37,7 +37,7 @@ def compileFunction():
     # Build the package
     subprocess.run(["./startupcpp.sh"], shell=True, executable='/bin/bash')
 
-ser = serial.Serial('/dev/ttyACM1', 9600, timeout=0.2)
+ser = serial.Serial('/dev/serial/by-id/usb-Arduino__www.arduino.cc__0043_3433132363535180A231-if00', 9600, timeout=0.9)
 #start the c++ files before we start the ROS node and publish the data
 def main():
         t1 = threading.Thread(target = compileFunction)
@@ -55,8 +55,9 @@ def main():
                  print("Complete Failure for port connecting to arduino.")
                  return
         while line != "All sensors are ready.":
-            print("Failure of sensors")
+            print("Not Connecting\n")
             time.sleep(3)
+            print(line)
             line = ser.readline().decode('utf-8').strip()
         stringcmdlol = "start."
         ser.write(stringcmdlol.encode())

@@ -38,6 +38,7 @@ def compileFunction():
     subprocess.run(["./startupcpp.sh"], shell=True, executable='/bin/bash')
 
 ser = serial.Serial('/dev/serial/by-id/usb-Arduino__www.arduino.cc__0043_3433132363535180A231-if00', 9600, timeout=0.9)
+
 #start the c++ files before we start the ROS node and publish the data
 def main():
         t1 = threading.Thread(target = compileFunction)
@@ -47,6 +48,7 @@ def main():
             try:
                 ser.reset_input_buffer()    
                 line = ser.readline().decode('utf-8').rstrip()
+                print("Failure : Could not connect by-id")
                 break
             except:
              ser = serial.Serial('/dev/ttyACM' + str(i), 9600, timeout=0.2)

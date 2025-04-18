@@ -19,7 +19,7 @@ class MinimalPublisher(Node):
     def __init__(self):
         super().__init__('research_python_node')
         self.rpublisher_ = self.create_publisher(String, 'researchSensorsData', 10)
-        self.depthpublisher = self.create_publisher(String, 'depthSensorData', 10)
+        self.depthpublisher = self.create_publisher(String, 'depthPressureSensorData', 10)
         
     #publishing the actual line of the sensor data from Arduino with ROS
     def publish_line(self, line):

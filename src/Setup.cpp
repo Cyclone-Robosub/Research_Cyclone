@@ -39,7 +39,7 @@ std::string Setup::start() {
    + dataFile, std::ofstream::app);
 
     //Append this for every new file.
-    outFile << "Time,Depth(m),Temperature(C),Altitude,Pressure\n";
+    outFile << "Time,Depth(m),Pressure,Temperature(C),Altitude\n";
     outFile.close();
   }
   return dataFilePathString + dataFile;

@@ -13,7 +13,9 @@
 #endif
 MS5837 depthReader = MS5837();
 TSYS01 tempReader = TSYS01();
-void startReading()
+#define NULL_SENSOR_VALUE -320000
+#define FAULTY_SENSOR_VALUE -40404
+void ReadAllSensors()
 {
   if (depthReader.init())
   {
@@ -27,7 +29,7 @@ void startReading()
   if (tempReader.temperature() < -1000)
   {
     // Serial.println("No Got it");
-    tempStringC = String(depthReader.temperature(), 5);
+    tempStringC = FAULTY_SENSOR_VALUE;
   }
   else
   {
@@ -38,10 +40,11 @@ void startReading()
   String altString = String(depthReader.altitude(), 5);
   String pressureString = String(depthReader.pressure(), 5);
 
-  Serial.println("Reading: " + depthString + "," + altString + "," + tempStringC + "," + pressureString + "," + pH.read_ph());
+  Serial.println("Reading: " + depthString + "," + pressureString + "," altString +
+                 "," + tempStringC + "," + pH.read_ph());
 }
 
-void startSensors()
+void startupSensors()
 {
   depthReader.setModel(MS5837::MS5837_30BA);
   depthReader.setFluidDensity(997);
@@ -68,21 +71,19 @@ void setup()
 {
   Serial.begin(9600);
   Wire.begin();
-  startSensors();
+  startupSensors();
+  String givenString = Serial.readString();
+  Serial.println(givenString);
+  while (givenString != "start") {
+    Serial.println("All sensors are ready.");
+    givenString = Serial.readStringUntil('.');
+    delay(10);
+    // debugging: Serial.println(givenString);
+  }
   // loop();
 }
 void loop()
 {
-  String givenString = Serial.readString();
-  Serial.println(givenString);
-    while (givenString != "start")
-    {
-      Serial.println("All sensors are ready.");
-      givenString = Serial.readStringUntil('.');
-      delay(10);
-      Serial.println(givenString);
-    }
-    while(true){
-    startReading();
-    }
-  }
+  ReadAllSensors();
+  
+}

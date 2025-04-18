@@ -19,7 +19,7 @@ class MinimalPublisher(Node):
     def __init__(self):
         super().__init__('research_python_node')
         self.rpublisher_ = self.create_publisher(String, 'researchSensorsData', 10)
-        self.depthpublisher = self.create_publisher(String, 'depthPressureSensorData', 10)
+        self.depthPressurepublisher = self.create_publisher(String, 'depthPressureSensorData', 10)
         
     #publishing the actual line of the sensor data from Arduino with ROS
     def publish_line(self, line):
@@ -27,7 +27,7 @@ class MinimalPublisher(Node):
         msg.data = line
         # need to parse it into a variable -> depth
         self.rpublisher_.publish(msg)
-        self.depthpublisher.publish(msg)
+        self.depthPressurepublisher.publish(msg)
         print(line)
 #This compile command will build, use the ROS source library files, and then
 #execute. Make sure that this bash script is inside a thread, because the bash

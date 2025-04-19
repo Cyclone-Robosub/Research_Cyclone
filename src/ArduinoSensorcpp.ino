@@ -3,6 +3,8 @@
 #include <Wire.h>
 #include <floatToString.h>
 #include <MS5837.h>
+#include <Adafruit_Sensor.h>
+
 
 #ifdef USE_PULSE_OUT
   #include "ph_iso_surveyor.h"       
@@ -11,20 +13,21 @@
   #include "ph_surveyor.h"             
   Surveyor_pH pH = Surveyor_pH(A0);   
 #endif
+
+
 MS5837 depthReader = MS5837();
 TSYS01 tempReader = TSYS01();
+
+#define TCADDR 0x70
 #define NULL_SENSOR_VALUE -320000
 #define FAULTY_SENSOR_VALUE -40404
+
+
 void ReadAllSensors()
 {
-  if (depthReader.init())
-  {
+ // Wire.beginTransmission(0x76);
     depthReader.read();
-  }
-  if (tempReader.init())
-  {
     tempReader.read();
-  }
   String tempStringC;
   if (tempReader.temperature() < -1000)
   {
@@ -36,16 +39,27 @@ void ReadAllSensors()
     // Serial.println("Got it");
     tempStringC = String(tempReader.temperature(), 5);
   }
+  String pHString = String(pH.read_ph(), 5);
   String depthString = String(depthReader.depth(), 5);
   String altString = String(depthReader.altitude(), 5);
   String pressureString = String(depthReader.pressure(), 5);
-
-  Serial.println("Reading: " + depthString + "," + pressureString + "," altString +
-                 "," + tempStringC + "," + pH.read_ph());
+  Serial.begin(9600);
+  Wire.begin();
+  Serial.println("Reading: " + depthString + "," + pressureString + "," + altString +
+                 "," + tempStringC + "," + pHString);
 }
-
+void tcaselect(uint8_t i) {
+  if (i > 7) return;
+ 
+  Wire.beginTransmission(TCADDR);
+  Wire.write(1 << i);
+  Wire.endTransmission();  
+}
 void startupSensors()
 {
+  tcaselect(1);
+  Wire.beginTransmission(118);
+
   depthReader.setModel(MS5837::MS5837_30BA);
   depthReader.setFluidDensity(997);
   if (depthReader.init())
@@ -56,8 +70,8 @@ void startupSensors()
   {
     Serial.println("failed from arduino side.");
     while(!depthReader.init()){
-      Serial.println("failed from arduino side.");
-      delay(1000);
+      Serial.println("Depth sensor.");
+      delay(100);
     }
     Serial.println("All sensors are ready.");
   }
@@ -72,7 +86,9 @@ void setup()
   Serial.begin(9600);
   Wire.begin();
   startupSensors();
-  String givenString = Serial.readString();
+  //Serial.begin(9600);
+  Serial.println("start working");
+  String givenString = Serial.readStringUntil('.');
   Serial.println(givenString);
   while (givenString != "start") {
     Serial.println("All sensors are ready.");

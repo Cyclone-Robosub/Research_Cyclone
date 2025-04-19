@@ -56,7 +56,9 @@ def main():
              if i > 11:
                  print("Complete Failure for port connecting to arduino.")
                  return
-        while line != "All sensors are ready.":
+        reading_string = line
+        string1 = reading_string.split(",")
+        while line != "All sensors are ready." or string1 != "Reading":
             print("Not Connecting\n")
             time.sleep(3)
             print(line)

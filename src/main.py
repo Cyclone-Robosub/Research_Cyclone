@@ -27,7 +27,9 @@ class MinimalPublisher(Node):
         msg.data = line
         # need to parse it into a variable -> depth
         self.rpublisher_.publish(msg)
-        self.depthpublisher.publish(msg)
+        data_string = line
+        string1, string2, string3, = data_string.split(",")
+        self.depthpublisher.publish(f"{string2},{string3},")
         print(line)
 #This compile command will build, use the ROS source library files, and then
 #execute. Make sure that this bash script is inside a thread, because the bash

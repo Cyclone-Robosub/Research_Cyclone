@@ -26,7 +26,11 @@ TSYS01 tempReader = TSYS01();
 void ReadAllSensors()
 {
  // Wire.beginTransmission(0x76);
+ tcaselect(1);
+  Wire.beginTransmission(118);
     depthReader.read();
+    tcaselect(7);
+  Wire.beginTransmission(119);
     tempReader.read();
   String tempStringC;
   if (tempReader.temperature() < -1000)
@@ -48,11 +52,11 @@ void ReadAllSensors()
   Serial.println("Reading," + depthString + "," + pressureString + "," + altString +
                  "," + tempStringC + "," + pHString);
 }
-void tcaselect(uint8_t i) {
-  if (i > 7) return;
+void tcaselect(uint8_t portOnTCA) {
+  if (portOnTCA > 7) return;
  
   Wire.beginTransmission(TCADDR);
-  Wire.write(1 << i);
+  Wire.write(1 << portOnTCA);
   Wire.endTransmission();  
 }
 void startupSensors()
@@ -62,7 +66,11 @@ void startupSensors()
 
   depthReader.setModel(MS5837::MS5837_30BA);
   depthReader.setFluidDensity(997);
-  if (depthReader.init())
+  depthReader.init();
+  tcaselect(7);
+  Wire.beginTransmission(119);
+  tempReader.init();
+  if (depthReader.init() && tempReader.init())
   {
     Serial.println("All sensors are ready.");
   }
@@ -71,6 +79,9 @@ void startupSensors()
     Serial.println("failed from arduino side.");
     while(!depthReader.init()){
       Serial.println("Depth sensor.");
+      delay(100);
+    }while(!tempReader.init()){
+      Serial.println("temp sensor.");
       delay(100);
     }
     Serial.println("All sensors are ready.");
@@ -81,6 +92,8 @@ void startupSensors()
 
   return 0;
 }
+
+
 void setup()
 {
   Serial.begin(9600);

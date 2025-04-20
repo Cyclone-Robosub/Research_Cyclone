@@ -45,6 +45,7 @@ def main():
         t1 = threading.Thread(target = compileFunction)
         t1.start()
         i = 0
+        ser = serial.Serial('/dev/serial/by-id/usb-Arduino__www.arduino.cc__0043_3433132363535180A231-if00', 9600, timeout=0.9)
         while True:
             try:
                 ser.reset_input_buffer()    
@@ -63,6 +64,8 @@ def main():
             time.sleep(3)
             print(line)
             line = ser.readline().decode('utf-8').strip()
+            reading_string = line
+            string1 = reading_string.split(",")
         stringcmdlol = "start."
         ser.write(stringcmdlol.encode())
         rclpy.init()
@@ -72,7 +75,6 @@ def main():
 #The ROS Node will keep running and this function will read off the 
 #Arduino data
 def getData(minimal_publisher):
-    print("started reading data")
     while True:
             line = ser.readline().decode('utf-8').rstrip()
             minimal_publisher.publish_line(line)

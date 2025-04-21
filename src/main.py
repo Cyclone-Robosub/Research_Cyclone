@@ -28,9 +28,9 @@ class MinimalPublisher(Node):
         # need to parse it into a variable -> depth
         self.rpublisher_.publish(msg)
         data_string = line
+        print(line)
         string1, string2, string3, = data_string.split(",")
         self.depthpublisher.publish(f"{string2},{string3},")
-        print(line)
 #This compile command will build, use the ROS source library files, and then
 #execute. Make sure that this bash script is inside a thread, because the bash
 #script command will not continue while the c++ files are running/bash script
@@ -59,13 +59,15 @@ def main():
                  return
         reading_string = line
         string1 = reading_string.split(",")
-        while line != "All sensors are ready." or string1 != "Reading":
+        while line != "All sensors are ready." and string1 != "Reading":
             print("Not Connecting\n")
             time.sleep(3)
             print(line)
             line = ser.readline().decode('utf-8').strip()
+            print(line)
             reading_string = line
             string1 = reading_string.split(",")
+            print(string1)
         stringcmdlol = "start."
         ser.write(stringcmdlol.encode())
         rclpy.init()

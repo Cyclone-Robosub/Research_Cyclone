@@ -55,11 +55,14 @@ def main():
                 line = ser.readline().decode('utf-8').rstrip()
                 break
             except:
-             ser = serial.Serial('/dev/ttyACM' + str(i), 9600, timeout=0.2)
-             i += 1
-             if i > 11:
-                 print("Complete Failure for port connecting to arduino.")
-                 return
+            # ser = serial.Serial('/dev/ttyACM' + str(i), 9600, timeout=0.2)
+             #i += 1
+             #if i > 11:
+                 #print("Complete Failure for port connecting to arduino.")
+                 #return
+                ser.reset_input_buffer()    
+                line = ser.readline().decode('utf-8').rstrip()
+                break
         reading_string = line
         string1 = reading_string.split(",")
         while line != "All sensors are ready." and string1 != "Reading":

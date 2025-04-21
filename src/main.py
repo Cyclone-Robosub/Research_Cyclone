@@ -29,8 +29,11 @@ class MinimalPublisher(Node):
         self.rpublisher_.publish(msg)
         data_string = line
         print(line)
-        string1, string2, string3, = data_string.split(",")
-        self.depthpublisher.publish(f"{string2},{string3},")
+        try:
+            string1, string2, string3, = data_string.split(",")
+            self.depthpublisher.publish(f"{string2},{string3},")
+        except:
+            self.depthpublisher.publish(msg)
 #This compile command will build, use the ROS source library files, and then
 #execute. Make sure that this bash script is inside a thread, because the bash
 #script command will not continue while the c++ files are running/bash script

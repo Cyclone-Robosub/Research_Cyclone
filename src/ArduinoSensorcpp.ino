@@ -25,7 +25,6 @@ TSYS01 tempReader = TSYS01();
 
 void ReadAllSensors()
 {
- // Wire.beginTransmission(0x76);
  tcaselect(1);
   Wire.beginTransmission(118);
     depthReader.read();
@@ -84,13 +83,13 @@ void startupSensors()
       Serial.println("temp sensor.");
       delay(100);
     }
+    while(!pH.begin()){
+      Serial.println("PH sensor.");
+      delay(100);
+    }
     Serial.println("All sensors are ready.");
   }
-  if (pH.begin()) {                                     
-    Serial.println("Loaded EEPROM");
-  }
 
-  return 0;
 }
 
 

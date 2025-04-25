@@ -85,7 +85,7 @@ def main():
 def getData(minimal_publisher):
     while True:
             line = ser.readline().decode('utf-8').rstrip()
-            minimal_publisher.publish_line(line)
+            minimal_publisher.publish_line(str(line))
             #minimal_publisher.publish_line(f"YAY Time : {time.time()}")                
 
 main()

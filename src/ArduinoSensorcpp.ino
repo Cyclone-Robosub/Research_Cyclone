@@ -48,8 +48,8 @@ void ReadAllSensors()
   String pressureString = String(depthReader.pressure(), 5);
   Serial.begin(9600);
   Wire.begin();
-  Serial.println("Reading," + depthString + "," + pressureString + "," + altString +
-                 "," + tempStringC + "," + pHString);
+  Serial.println("Reading, " + depthString + ", " + pressureString + ", " + altString +
+                 ", " + tempStringC + ", " + pHString);
 }
 void tcaselect(uint8_t portOnTCA) {
   if (portOnTCA > 7) return;

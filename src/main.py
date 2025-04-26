@@ -30,8 +30,9 @@ class MinimalPublisher(Node):
         data_string = line
         print(line)
         try:
-            string1, string2, string3, = data_string.split(",")
-            self.depthpublisher.publish(f"{string2},{string3},")
+            string1 = data_string.split()
+            stringRes = string1[0] + " " + string1[1]
+            self.depthpublisher.publish(f"{stringRes}")
         except:
             self.depthpublisher.publish(msg)
 #This compile command will build, use the ROS source library files, and then

@@ -83,10 +83,6 @@ void startupSensors()
       Serial.println("temp sensor.");
       delay(100);
     }
-    while(!pH.begin()){
-      Serial.println("PH sensor.");
-      delay(100);
-    }
     Serial.println("All sensors are ready.");
   }
 

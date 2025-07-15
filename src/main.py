@@ -19,9 +19,11 @@ class MinimalPublisher(Node):
     def __init__(self):
         super().__init__('research_python_node')
         self.rpublisher_ = self.create_publisher(String, 'researchSensorsData', 10)
+        self.CurrentPublisher = self.create_publisher(String, 'currentReadingTopic', 10)
         self.depthpublisher = self.create_publisher(String, 'depthPressureSensorData', 10)
         
     #publishing the actual line of the sensor data from Arduino with ROS
+    #Publishes to Research Data Storage Topic and DepthandPressure Topic
     def publish_line(self, line):
         msg = String()
         msg.data = line
@@ -33,6 +35,8 @@ class MinimalPublisher(Node):
             string1 = data_string.split()
             stringRes = string1[0] + " " + string1[1]
             self.depthpublisher.publish(f"{stringRes}")
+            stringCurrent = string1[5]
+            self.CurrentPublisher.publish(f"{stringCurrent}")
         except:
             self.depthpublisher.publish(msg)
 #This compile command will build, use the ROS source library files, and then
@@ -56,14 +60,11 @@ def main():
                 line = ser.readline().decode('utf-8').rstrip()
                 break
             except:
-            # ser = serial.Serial('/dev/ttyACM' + str(i), 9600, timeout=0.2)
-             #i += 1
-             #if i > 11:
+                ser = serial.Serial('/dev/ttyACM' + str(i), 9600, timeout=0.2)
+                i += 1
+                #if i > 11:
                  #print("Complete Failure for port connecting to arduino.")
                  #return
-                ser.reset_input_buffer()    
-                line = ser.readline().decode('utf-8').rstrip()
-                break
         reading_string = line
         string1 = reading_string.split(",")
         while line != "All sensors are ready." and string1 != "Reading":

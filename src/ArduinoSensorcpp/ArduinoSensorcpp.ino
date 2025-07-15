@@ -49,7 +49,7 @@ void ReadAllSensors()
   Serial.begin(9600);
   Wire.begin();
   Serial.println(depthString + ", " + pressureString + ", " + altString +
-                 ", " + tempStringC + ", " + pHString);
+                 ", " + tempStringC + ", " + pHString + ", " + CurrentReading);
 }
 void tcaselect(uint8_t portOnTCA) {
   if (portOnTCA > 7) return;

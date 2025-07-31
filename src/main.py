@@ -24,19 +24,34 @@ class MinimalPublisher(Node):
     def __init__(self, node_name):
         super().__init__(node_name)
         self.rpublisher_ = self.create_publisher(String, 'researchSensorsData', 10)
+
+        self.CurrentPublisher = self.create_publisher(String, 'currentReadingTopic', 10)
+        self.depthpublisher = self.create_publisher(String, 'depthPressureSensorData', 10)
         self.depthpublisher = self.create_publisher(String, 'depthPressureSensorData', self.getData, 10)
     def getData(self):
         while True:
             line = ser.readline().decode('utf-8').rstrip()
             self.publish_line(line)
+
         
     #publishing the actual line of the sensor data from Arduino with ROS
+    #Publishes to Research Data Storage Topic and DepthandPressure Topic
     def publish_line(self, line):
         msg = String()
         msg.data = line
         # need to parse it into a variable -> depth
         self.rpublisher_.publish(msg)
         data_string = line
+
+        print(line)
+        try:
+            string1 = data_string.split()
+            stringRes = string1[0] + " " + string1[1]
+            self.depthpublisher.publish(f"{stringRes}")
+            stringCurrent = string1[5]
+            self.CurrentPublisher.publish(f"{stringCurrent}")
+        except:
+            self.depthpublisher.publish(msg)
         string1, string2, string3, = data_string.split(",")
         self.depthpublisher.publish(f"{string2},{string3},")
 class ManiCommandSubscriber(Node):
@@ -50,9 +65,6 @@ class ManiCommandSubscriber(Node):
         )
     def command_Callback(self, msg):
         ser.write(msg.data.encode())
-        
-
-
 #This compile command will build, use the ROS source library files, and then
 #execute. Make sure that this bash script is inside a thread, because the bash
 #script command will not continue while the c++ files are running/bash script
@@ -72,20 +84,22 @@ def main():
                 line = ser.readline().decode('utf-8').rstrip()
                 break
             except:
-             ser = serial.Serial('/dev/ttyACM' + str(i), 9600, timeout=0.2)
-             i += 1
-             if i > 11:
-                 print("Complete Failure for port connecting to arduino.")
-                 return
+                ser = serial.Serial('/dev/ttyACM' + str(i), 9600, timeout=0.2)
+                i += 1
+                #if i > 11:
+                 #print("Complete Failure for port connecting to arduino.")
+                 #return
         reading_string = line
         string1 = reading_string.split(",")
-        while line != "All sensors are ready." or string1 != "Reading":
+        while line != "All sensors are ready." and string1 != "Reading":
             print("Not Connecting\n")
             time.sleep(3)
             print(line)
             line = ser.readline().decode('utf-8').strip()
+            print(line)
             reading_string = line
             string1 = reading_string.split(",")
+            print(string1)
         stringcmdlol = "start."
         ser.write(stringcmdlol.encode())
         rclpy.init()
@@ -97,6 +111,10 @@ def main():
         executor.spin()
 #The ROS Node will keep running and this function will read off the 
 #Arduino data
+def getData(minimal_publisher):
+    while True:
+            line = ser.readline().decode('utf-8').rstrip()
+            minimal_publisher.publish_line(str(line))
             #minimal_publisher.publish_line(f"YAY Time : {time.time()}")                
 
 main()

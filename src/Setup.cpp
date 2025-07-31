@@ -1,4 +1,4 @@
-//Created by Tanishq Dwivedi
+// Created by Tanishq Dwivedi
 #include "Setup.hpp"
 
 #include <signal.h>
@@ -14,16 +14,15 @@
 namespace fs = std::filesystem;
 Setup::Setup() {}
 
-
 std::string Setup::getCurrentDate() {
   time_t now = time(0);
-  tm* localTime = localtime(&now);
+  tm *localTime = localtime(&now);
   char buffer[80];
   strftime(buffer, sizeof(buffer), "%Y-%m-%d", localTime);
   return std::string(buffer);
 }
 // Create a file named with the current date and return
-  //the path towards the new file if it does not exist.
+// the path towards the new file if it does not exist.
 std::string Setup::start() {
   fs::path currentPath = fs::current_path();
   fs::path parentPath = currentPath.parent_path();
@@ -32,14 +31,14 @@ std::string Setup::start() {
   std::string updateCommand = "start";
   std::string dataFile = date + ".csv";
   std::fstream outFile;
-  if (!std::filesystem::exists(dataFilePathString
- + dataFile))
-  {
-    outFile.open(dataFilePathString
-   + dataFile, std::ofstream::app);
+  if (!std::filesystem::exists(dataFilePathString + dataFile)) {
+    outFile.open(dataFilePathString + dataFile, std::ofstream::app);
 
-    //Append this for every new file.
-    outFile << "Time,Depth(m),Pressure,Altitude,Temperature,pH\n";
+    // Append this for every new file.
+    outFile << "Time,PlaceHolder,Depth(m),Pressure,Altitude,Temperature(c),pH\n";
+    outFile.close();
+  }else{
+    outFile << date << "\n";
     outFile.close();
   }
   return dataFilePathString + dataFile;

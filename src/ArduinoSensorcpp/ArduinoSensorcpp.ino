@@ -7,7 +7,7 @@
 #include <Adafruit_ADS1X15.h> //include for the ADS1115 ADC
 
 
-
+/* not needed for competition
 #ifdef USE_PULSE_OUT
   #include "ph_iso_surveyor.h"       
   Surveyor_pH_Isolated pH = Surveyor_pH_Isolated(A0);         
@@ -15,7 +15,9 @@
   #include "ph_surveyor.h"             
   Surveyor_pH pH = Surveyor_pH(A0);   
 #endif
+*/
 
+//I2C Multiplexer functions are not needed right now because only the ADC is in use. -KJH 08/01/25
 
 MS5837 depthReader = MS5837();
 TSYS01 tempReader = TSYS01();
@@ -49,8 +51,10 @@ void ReadAllSensors()
     // Serial.println("Got it");
     tempStringC = String(tempReader.temperature(), 5);
   }
-  String pHString = String(pH.read_ph(), 5);
-  String depthString = String(depthReader.depth(), 5);
+  //String pHString = String(pH.read_ph(), 5); //commented out while library issue is unresolved - KJH 08/01/25
+  //String depthString = String(depthReader.depth(), 5);
+  String pHString = String(NULL_SENSOR_VALUE, 5);
+  String depthString = String(NULL_SENSOR_VALUE, 5);
   String altString = String(depthReader.altitude(), 5);
   String pressureString = String(depthReader.pressure(), 5);
 

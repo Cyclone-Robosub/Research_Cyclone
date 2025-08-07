@@ -12,6 +12,7 @@ from rclpy.node import Node
 from rclpy.executors import MultiThreadedExecutor
 import os
 from std_msgs.msg import String
+from std_msgs.msg import Int64
 import io
 import string
 
@@ -25,7 +26,6 @@ class MinimalPublisher(Node):
     def __init__(self, node_name):
         super().__init__(node_name)
         self.rpublisher_ = self.create_publisher(String, 'researchSensorsData', 10)
-
         self.CurrentPublisher = self.create_publisher(String, 'currentReadingTopic', 10)
         self.VoltPublisher = self.create_publisher(String, 'voltageReadingTopic', 10)
         self.depthpublisher = self.create_publisher(String, 'depthPressureSensorData', 10)
@@ -60,13 +60,13 @@ class ManiCommandSubscriber(Node):
     def __init__(self, node_name):
         super().__init__(node_name)
         self.subscription = self.create_subscription(
-            String,
+            Int64,
             'maniControlData',
             self.command_Callback,
             10
         )
     def command_Callback(self, msg):
-        ser.write(msg.data.encode())
+        ser.write((str(msg.data) + '\n').encode())
 #This compile command will build, use the ROS source library files, and then
 #execute. Make sure that this bash script is inside a thread, because the bash
 #script command will not continue while the c++ files are running/bash script

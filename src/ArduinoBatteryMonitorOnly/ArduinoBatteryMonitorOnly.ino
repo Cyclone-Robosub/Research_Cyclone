@@ -3,7 +3,10 @@
 #include <floatToString.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_ADS1X15.h> //include for the ADS1115 ADC
+#include <Servo.h>
 
+Servo myServo;
+const int servoPin = 9;
 
 Adafruit_ADS1115 ads;
 
@@ -50,24 +53,41 @@ float measureBatteryCurrent(){
 }
 
 void startupSensors()
-{
-  
+{  
   //start adc
   ads.begin(ADS1115ADR, &Wire); 
-
-  /*
-
-  if (!ads.begin()) {
-    Serial.println("Failed to initialize ADS.");
-    while (1);
-  }
-  */
-
   Serial.println("Startup Complete.");
 
 }
 
+void setupServo(){
+  myServo.attach(servoPin); // Attach the servo to pin 9
+  myServo.write(90); // Set initial position to 90 degrees
+  Serial.println("Servo initialized at 90 degrees");
+}
 
+void updateServoUsingSerial(){
+   if (Serial.available() > 0) {
+        String command = Serial.readStringUntil('\n'); // Read input from serial monitor
+        command.trim(); // Remove any whitespace
+
+        if (command == "1") {
+            myServo.write(50);
+            Serial.println("Servo moved to state 1");
+        } 
+        else if (command == "2") {
+            myServo.write(15);
+            Serial.println("Servo moved to state 2");
+        } 
+        else if (command == "r") {
+            myServo.write(80);
+            Serial.println("Servo moved to rest state");
+        } 
+        else {
+            Serial.println("Invalid command. Use open1, open2, or rest.");
+        }
+    }
+}
 
 void setup(){
 
@@ -84,6 +104,8 @@ void setup(){
   String givenString = Serial.readStringUntil('.');
   Serial.println(givenString);
 
+  setupServo();
+
   while (givenString != "start") {
     Serial.println("All sensors are ready.");
     givenString = Serial.readStringUntil('.');
@@ -98,6 +120,7 @@ void loop()
   t1 = millis();
   
   ReadAllSensors();
+  updateServoUsingSerial();
 
   while(millis()-t1 < 1000); //control loop frequency
   

@@ -1,9 +1,9 @@
 #include "MS5837.h"
 #include <math.h>
-#include <thread>
-#include <iostream>
+//#include <thread>
+//#include <iostream>
 
-using namespace std::chrono_literals;
+//using namespace std::chrono_literals;
 
 #define MS5837_ADDR               0x76  
 #define MS5837_RESET              0x1E

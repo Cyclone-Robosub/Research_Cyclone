@@ -1,3 +1,5 @@
+//            Libraries              //
+
 #include <base_surveyor.h>
 #include <do_iso_surveyor.h>
 #include <do_surveyor.h>
@@ -6,25 +8,18 @@
 #include <ph_iso_surveyor.h>
 #include <ph_surveyor.h>
 #include <rtd_surveyor.h>
-
 #include <string.h>
 #include <SD.h>
 #include <SPI.h>
 #include "TSYS01.h"
 #include <MS5837.h>
-
 #include <Wire.h>
 #include <floatToString.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_ADS1X15.h>  //include for the ADS1115 ADC
-
-
 #include "RTClib.h"
 RTC_DS3231 rtc;
 char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
-
-
-//#define USE_PULSE_OUT
 #ifdef USE_PULSE_OUT
 #include "ph_iso_surveyor.h"
 Surveyor_pH_Isolated pH = Surveyor_pH_Isolated(A0);
@@ -32,22 +27,18 @@ Surveyor_pH_Isolated pH = Surveyor_pH_Isolated(A0);
 #include "ph_surveyor.h"
 Surveyor_pH pH = Surveyor_pH(A0);
 #endif
-
-
-
 MS5837 depthReader = MS5837();
 TSYS01 tempReader = TSYS01();
-
 #define SDcardPIN 10
 #define NULL_SENSOR_VALUE -320000
-
 TSYS01 sensor;
 File researchFile;
 String pathtoResearchFile;
 bool isSDcardReady = false;
 
 
-//pH Calibration stuffs
+//         pH Calibration            //
+
 uint8_t user_bytes_received = 0;
 const uint8_t bufferlen = 32;
 char user_data[bufferlen];
@@ -78,39 +69,7 @@ void parse_cmd(char* string) {
 //End pH Callibration
 
 
-void ReadAllSensors() {
-/*
-  depthReader.read();
-  tempReader.read();
-
-  float t = tempReader.temperature();
-  float p = depthReader.pressure();
-  float d = depthReader.depth();
-  float phVal = pH.read_ph();
-
-  DateTime now = rtc.now();
-
-  // Print to Serial
-  Serial.print(now.hour()); Serial.print(":"); Serial.print(now.minute()); Serial.print(":"); Serial.println(now.second(), DEC);
-  Serial.print(F("Temp: ")); Serial.print(t); Serial.print(F(" | pH: ")); Serial.println(phVal);
-  Serial.print(F("Depth: ")); Serial.println(d);
-  Serial.println("");
-
-  // Log to SD
-  if (isSDcardReady && researchFile) {
-    researchFile.print(now.timestamp(DateTime::TIMESTAMP_TIME));
-    researchFile.print(", ");
-    researchFile.print(t, 5);
-    researchFile.print(", ");
-    researchFile.print(phVal, 3);
-    researchFile.print(", ");
-    researchFile.print(d, 5);
-    researchFile.print(", ");
-    researchFile.println(p, 5);
-    researchFile.flush(); // Ensure data is saved
-  }
-  delay(500);
-  */
+void ReadAllSensors() {  //******************************************************************
   depthReader.read();
   delay(10);
   tempReader.read();
@@ -118,16 +77,11 @@ void ReadAllSensors() {
 
   String tempStringC;
   if (tempReader.temperature() < -1000) {
-    // Serial.println("No Got it");
     tempStringC = String(NULL_SENSOR_VALUE);
   } else {
     // Serial.println("Got it");
     tempStringC = String(tempReader.temperature(), 5);
   }
-
-  String pHString = String(pH.read_ph(), 3);
-  String depthString = String(depthReader.depth(), 5);
-  String pressureString = String(depthReader.pressure(), 5);
 
 
   DateTime now = rtc.now();
@@ -135,6 +89,10 @@ void ReadAllSensors() {
   String minuteStr = (now.minute() < 10 ? "0" : "") + String(now.minute(), DEC);
   String secondStr = (now.second() < 10 ? "0" : "") + String(now.second(), DEC);
   String formattedTime = hourStr + ":" + minuteStr + ":" + secondStr;
+  String pHString = String(pH.read_ph(), 3);
+  String depthString = String(depthReader.depth(), 3);
+  String pressureString = String(depthReader.pressure(), 3);
+
 
   if (isSDcardReady) {
     if (researchFile) {
@@ -144,11 +102,14 @@ void ReadAllSensors() {
       //Serial.println("");
       researchFile.println(formattedTime + ", " + tempStringC + ", " + pHString + ", " + depthString + ", " + pressureString);
       researchFile.flush();
-      delay (5000); //This delay is to limit how many data points we receive: we don't need it to read more often than this
+      delay (5000); 
+       
+      //       This delay is to limit how many data points we receive: we don't need it to read more often than this         //
+      
     }
-  }//*/
+  }
 }
-void startupSensors() {
+void startupSensors() {  //******************************************************************
   //start depth sensor and configure
   depthReader.setModel(MS5837::MS5837_30BA);
   depthReader.setFluidDensity(997);
@@ -175,17 +136,14 @@ void startupSensors() {
   }
 }
 
-
-
-void SetResearchFileName() {
+void SetResearchFileName() {//**************************************************************
   pathtoResearchFile = "Research.txt";
-  //We need to stop once all the previous files are gone through.
   Serial.println("Opening: Research.txt!");
 }
 
 
 
-void OpenResearchFile() {
+void OpenResearchFile() {  //***************************************************************
   researchFile = SD.open(pathtoResearchFile, FILE_WRITE);
   if (researchFile) {
     isSDcardReady = true;
@@ -196,14 +154,14 @@ void OpenResearchFile() {
   }
 }
 
-void setup() {
+void setup() {  //**************************************************************************
 
   Serial.begin(115200);
   Serial.print("Arduino Initializing!!! ");
   researchFile.close();
 
   while (!Serial) {
-    ; // wait for serial port to connect. Needed for native USB port only
+    delay(10); // wait for serial port to connect. Needed for native USB port only
   }
 
   //RTC Setup
@@ -227,13 +185,12 @@ void setup() {
     Serial.println("Failure to connect to SD card");
     while (1);
   }
-  Serial.println("card initialized.");
+  Serial.println("card initialized. THIS IS A NEW TEST RUN!! 3 9 26");
   SetResearchFileName();
 
   researchFile = SD.open("Research.txt", FILE_WRITE);
   researchFile.println("");
-  //researchFile.println("HI THIS IS A NEW TEST RUN!! 3 9 26");
-  Serial.println("HI THIS IS A NEW TEST RUN!! 3 9 26");
+  
   DateTime now = rtc.now();
   String yearStr = (now.year() < 10 ? "0" : "") + String(now.year(), DEC);
   String monthStr = (now.month() < 10 ? "0" : "") + String(now.month(), DEC);
@@ -243,30 +200,21 @@ void setup() {
   Serial.print(formattedDate);
   Serial.println("");
   Serial.println("");
-  //Date/time
   delay (1000);
 }
 
-void loop() {
-  //for (int i = 0; i < 35000; i++) {
-  //String index = String(i);
-  //Serial.print(index);
-  //Serial.println("");
+void loop() { //**************************************************************************
+  
   if (Serial.available() > 0) {
-    //user_bytes_received = Serial.readBytesUntil(13, user_data, sizeof(user_data));
     user_bytes_received = Serial.readBytesUntil('\n', user_data, sizeof(user_data) - 1);
     user_data[user_bytes_received] = '\0';
   }
-
   if (user_bytes_received) {
     parse_cmd(user_data);
     user_bytes_received = 0;
     memset(user_data, 0, sizeof(user_data));
   }
-
-
   OpenResearchFile();
-  //
   ReadAllSensors();
 
 }

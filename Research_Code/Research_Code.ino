@@ -91,7 +91,7 @@ void ReadAllSensors() {  //*****************************************************
   String formattedTime = hourStr + ":" + minuteStr + ":" + secondStr;
   String pHString = String(pH.read_ph(), 3);
   String depthString = String(depthReader.depth(), 3);
-  String pressureString = String(depthReader.pressure(), 3);
+  String pressureString = String(depthReader.pressure(), 1);
 
 
   if (isSDcardReady) {
@@ -102,7 +102,7 @@ void ReadAllSensors() {  //*****************************************************
       //Serial.println("");
       researchFile.println(formattedTime + ", " + tempStringC + ", " + pHString + ", " + depthString + ", " + pressureString);
       researchFile.flush();
-      delay (5000); 
+      delay (2000); 
        
       //       This delay is to limit how many data points we receive: we don't need it to read more often than this         //
       
@@ -172,9 +172,8 @@ void setup() {  //**************************************************************
   }
   if (rtc.lostPower()) {
     Serial.println("RTC lost power, let's set the time!");
-    rtc.adjust(DateTime(2025, 1, 1, 0, 0, 0));
+    rtc.adjust(DateTime(2026, 4, 8, 12, 0, 0));
   }
-
 
   //SD Card
   Wire.begin();
@@ -185,7 +184,7 @@ void setup() {  //**************************************************************
     Serial.println("Failure to connect to SD card");
     while (1);
   }
-  Serial.println("card initialized. THIS IS A NEW TEST RUN!! 3 9 26");
+  Serial.println("card initialized. THIS IS A NEW TEST RUN!! 4 8 26");
   SetResearchFileName();
 
   researchFile = SD.open("Research.txt", FILE_WRITE);
@@ -195,9 +194,10 @@ void setup() {  //**************************************************************
   String yearStr = (now.year() < 10 ? "0" : "") + String(now.year(), DEC);
   String monthStr = (now.month() < 10 ? "0" : "") + String(now.month(), DEC);
   String dayStr = (now.day() < 10 ? "0" : "") + String(now.day(), DEC);
-  String formattedDate = monthStr + "/" + dayStr + "/" + yearStr;
-  researchFile.println(formattedDate);
-  Serial.print(formattedDate);
+  String formattedDate = monthStr + dayStr + yearStr;
+  researchFile.print(formattedDate);                                                 //  FIX!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  //
+  researchFile.flush();
+  Serial.println(formattedDate);
   Serial.println("");
   Serial.println("");
   delay (1000);

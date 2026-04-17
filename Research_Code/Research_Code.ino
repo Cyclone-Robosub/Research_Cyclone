@@ -19,7 +19,6 @@
 #include <Adafruit_ADS1X15.h>  //include for the ADS1115 ADC
 #include "RTClib.h"
 RTC_DS3231 rtc;
-char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 #ifdef USE_PULSE_OUT
 #include "ph_iso_surveyor.h"
 Surveyor_pH_Isolated pH = Surveyor_pH_Isolated(A0);
@@ -27,11 +26,13 @@ Surveyor_pH_Isolated pH = Surveyor_pH_Isolated(A0);
 #include "ph_surveyor.h"
 Surveyor_pH pH = Surveyor_pH(A0);
 #endif
-MS5837 depthReader = MS5837();
-TSYS01 tempReader = TSYS01();
+MS5837 depthReader = MS5837(); //Depth Sensor
+TSYS01 tempReader = TSYS01(); //Temp Sensor
+
 #define SDcardPIN 10
 #define NULL_SENSOR_VALUE -320000
-TSYS01 sensor;
+TSYS01 sensor; //Temp
+
 File researchFile;
 String pathtoResearchFile;
 bool isSDcardReady = false;
@@ -96,13 +97,9 @@ void ReadAllSensors() {  //*****************************************************
 
   if (isSDcardReady) {
     if (researchFile) {
-      //Serial.println("Time:   " + formattedTime);
-      //Serial.println("Temperature:  " + tempStringC + ", pH:   " + pHString);
-      //Serial.println("Depth:  " + depthString + ", Pressure:  " + pressureString);
-      //Serial.println("");
       researchFile.println(formattedTime + ", " + tempStringC + ", " + pHString + ", " + depthString + ", " + pressureString);
       researchFile.flush();
-      delay (2000); 
+      delay (5000); 
        
       //       This delay is to limit how many data points we receive: we don't need it to read more often than this         //
       
@@ -134,6 +131,10 @@ void startupSensors() {  //*****************************************************
     Serial.println("PH sensor problem.");
     delay(100);
   }
+    if (!SD.begin(SDcardPIN)) {
+    Serial.println("Failure to connect to SD card");
+    while (1);
+  }
 }
 
 void SetResearchFileName() {//**************************************************************
@@ -147,10 +148,6 @@ void OpenResearchFile() {  //***************************************************
   researchFile = SD.open(pathtoResearchFile, FILE_WRITE);
   if (researchFile) {
     isSDcardReady = true;
-  } else {
-    isSDcardReady = false;
-    //Serial.println("Failed to open file");
-    //Leaving this out. Seems like it runs well, it just has issues where it fails to open and then opens the file at the same timestamp after.
   }
 }
 
@@ -172,7 +169,7 @@ void setup() {  //**************************************************************
   }
   if (rtc.lostPower()) {
     Serial.println("RTC lost power, let's set the time!");
-    rtc.adjust(DateTime(2026, 4, 8, 12, 0, 0));
+    rtc.adjust(DateTime(2026, 4, 16, 6, 0, 0));
   }
 
   //SD Card
@@ -180,11 +177,8 @@ void setup() {  //**************************************************************
   startupSensors();
   pinMode(SDcardPIN, OUTPUT);
   //Serial.print("Initializing SD card... ");
-  if (!SD.begin(SDcardPIN)) {
-    Serial.println("Failure to connect to SD card");
-    while (1);
-  }
-  Serial.println("card initialized. THIS IS A NEW TEST RUN!! 4 8 26");
+
+  Serial.println("card initialized. THIS IS A NEW TEST RUN!! 4 16 26");
   SetResearchFileName();
 
   researchFile = SD.open("Research.txt", FILE_WRITE);
@@ -195,9 +189,12 @@ void setup() {  //**************************************************************
   String monthStr = (now.month() < 10 ? "0" : "") + String(now.month(), DEC);
   String dayStr = (now.day() < 10 ? "0" : "") + String(now.day(), DEC);
   String formattedDate = monthStr + dayStr + yearStr;
-  researchFile.print(formattedDate);                                                 //  FIX!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  //
-  researchFile.flush();
+  researchFile.print(formattedDate);
+  researchFile.flush();                                                 
+  researchFile.print("");
+  researchFile.print("");
   Serial.println(formattedDate);
+  Serial.flush();
   Serial.println("");
   Serial.println("");
   delay (1000);
@@ -214,6 +211,7 @@ void loop() { //****************************************************************
     user_bytes_received = 0;
     memset(user_data, 0, sizeof(user_data));
   }
+  
   OpenResearchFile();
   ReadAllSensors();
 

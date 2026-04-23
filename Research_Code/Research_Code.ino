@@ -84,25 +84,24 @@ void ReadAllSensors() {  //*****************************************************
     tempStringC = String(tempReader.temperature(), 5);
   }
 
-
+  char buffer[200];
   DateTime now = rtc.now();
-  String hourStr = (now.hour() < 10 ? "0" : "") + String(now.hour(), DEC);
-  String minuteStr = (now.minute() < 10 ? "0" : "") + String(now.minute(), DEC);
-  String secondStr = (now.second() < 10 ? "0" : "") + String(now.second(), DEC);
-  String formattedTime = hourStr + ":" + minuteStr + ":" + secondStr;
-  String pHString = String(pH.read_ph(), 3);
-  String depthString = String(depthReader.depth(), 3);
-  String pressureString = String(depthReader.pressure(), 1);
+  
+  snprintf(buffer, sizeof(buffer), "%02d:%02d:%02d, %.1f, %.3f, %.3f, %.1f",
+         now.hour(), 
+         now.minute(), 
+         now.second(),
+         tempReader.temperature(), 
+         pH.read_ph(),
+         depthReader.depth(),
+         depthReader.pressure());
 
-
-  if (isSDcardReady) {
-    if (researchFile) {
-      researchFile.println(formattedTime + ", " + tempStringC + ", " + pHString + ", " + depthString + ", " + pressureString);
-      researchFile.flush();
-      delay (5000); 
-       
-      //       This delay is to limit how many data points we receive: we don't need it to read more often than this         //
-      
+ if (isSDcardReady) {
+  if (researchFile) {
+    researchFile.println(buffer);
+    researchFile.flush();
+    delay(5000);
+    // This delay is to limit how many data points we receive: we don't need it to read more often than this //
     }
   }
 }

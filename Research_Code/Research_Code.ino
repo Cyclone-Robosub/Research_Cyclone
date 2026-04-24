@@ -100,10 +100,11 @@ void ReadAllSensors() {  //*****************************************************
   if (researchFile) {
     researchFile.println(buffer);
     researchFile.flush();
-    delay(5000);
+    delay(100);
     // This delay is to limit how many data points we receive: we don't need it to read more often than this //
     }
   }
+  researchFile.close();
 }
 void startupSensors() {  //******************************************************************
   //start depth sensor and configure
@@ -196,7 +197,7 @@ void setup() {  //**************************************************************
   Serial.flush();
   Serial.println("");
   Serial.println("");
-  delay (1000);
+  delay (500);
 }
 
 void loop() { //**************************************************************************

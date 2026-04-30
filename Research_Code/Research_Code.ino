@@ -37,7 +37,7 @@ File researchFile;
 String pathtoResearchFile;
 bool isSDcardReady = false;
 
-
+/*
 //         pH Calibration            //
 
 uint8_t user_bytes_received = 0;
@@ -68,7 +68,7 @@ void parse_cmd(char* string) {
   }
 }
 //End pH Callibration
-
+*/
 
 void ReadAllSensors() {  //******************************************************************
   depthReader.read();
@@ -87,20 +87,21 @@ void ReadAllSensors() {  //*****************************************************
   char buffer[200];
   DateTime now = rtc.now();
   
-  snprintf(buffer, sizeof(buffer), "%02d:%02d:%02d, %.1f, %.3f, %.3f, %.1f",
+  snprintf(buffer, sizeof(buffer), "%02d:%02d:%02d, %.1f, %.3f, %.1f",
          now.hour(), 
          now.minute(), 
          now.second(),
          tempReader.temperature(), 
-         pH.read_ph(),
+         //pH.read_ph(),
          depthReader.depth(),
          depthReader.pressure());
 
  if (isSDcardReady) {
   if (researchFile) {
     researchFile.println(buffer);
+    Serial.println(buffer);
     researchFile.flush();
-    delay(100);
+    delay(1000);
     // This delay is to limit how many data points we receive: we don't need it to read more often than this //
     }
   }
@@ -119,18 +120,18 @@ void startupSensors() {  //*****************************************************
     Serial.println("failed from arduino side.");
     while (!depthReader.init()) {
       Serial.println("Depth sensor.");
-      delay(100);
+      delay(500);
     }
     while (!tempReader.init()) {
       Serial.println("temp sensor.");
-      delay(100);
+      delay(500);
     }
     Serial.println("All sensors are ready.");
   }
-  if (!pH.begin()) {
+  /*if (!pH.begin()) {
     Serial.println("PH sensor problem.");
-    delay(100);
-  }
+    delay(500);
+  }*/ 
     if (!SD.begin(SDcardPIN)) {
     Serial.println("Failure to connect to SD card");
     while (1);
@@ -191,7 +192,7 @@ void setup() {  //**************************************************************
   String formattedDate = monthStr + dayStr + yearStr;
   researchFile.print(formattedDate);
   researchFile.flush();                                                 
-  researchFile.print("");
+  researchFile.println("");
   researchFile.print("");
   Serial.println(formattedDate);
   Serial.flush();
@@ -202,7 +203,7 @@ void setup() {  //**************************************************************
 
 void loop() { //**************************************************************************
   
-  if (Serial.available() > 0) {
+  /*if (Serial.available() > 0) {
     user_bytes_received = Serial.readBytesUntil('\n', user_data, sizeof(user_data) - 1);
     user_data[user_bytes_received] = '\0';
   }
@@ -211,7 +212,7 @@ void loop() { //****************************************************************
     user_bytes_received = 0;
     memset(user_data, 0, sizeof(user_data));
   }
-  
+  */
   OpenResearchFile();
   ReadAllSensors();
 

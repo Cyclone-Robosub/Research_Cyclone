@@ -99,9 +99,9 @@ void ReadAllSensors() {  //*****************************************************
  if (isSDcardReady) {
   if (researchFile) {
     researchFile.println(buffer);
-    Serial.println(buffer);
+    //Serial.println(buffer);
     researchFile.flush();
-    delay(1000);
+    delay(1500);
     // This delay is to limit how many data points we receive: we don't need it to read more often than this //
     }
   }
@@ -170,7 +170,7 @@ void setup() {  //**************************************************************
   }
   if (rtc.lostPower()) {
     Serial.println("RTC lost power, let's set the time!");
-    rtc.adjust(DateTime(2026, 4, 16, 6, 0, 0));
+    rtc.adjust(DateTime(2026, 5, 16, 5, 0, 0));
   }
 
   //SD Card

@@ -8,6 +8,7 @@
 #include <ph_iso_surveyor.h>
 #include <ph_surveyor.h>
 #include <rtd_surveyor.h>
+
 #include <string.h>
 #include <SD.h>
 #include <SPI.h>
@@ -38,13 +39,13 @@ String pathtoResearchFile;
 bool isSDcardReady = false;
 
 /*
-//         pH Calibration            //
+  //         pH Calibration            //
 
-uint8_t user_bytes_received = 0;
-const uint8_t bufferlen = 32;
-char user_data[bufferlen];
+  uint8_t user_bytes_received = 0;
+  const uint8_t bufferlen = 32;
+  char user_data[bufferlen];
 
-void parse_cmd(char* string) {
+  void parse_cmd(char* string) {
   string[strcspn(string, "\r\n")] = 0;
   if (strcmp(string, "CAL,7") == 0) {
     Serial.flush();
@@ -66,8 +67,8 @@ void parse_cmd(char* string) {
     pH.cal_clear();
     Serial.println("CALIBRATION CLEARED");
   }
-}
-//End pH Callibration
+  }
+  //End pH Callibration
 */
 
 void ReadAllSensors() {  //******************************************************************
@@ -86,23 +87,23 @@ void ReadAllSensors() {  //*****************************************************
 
   char buffer[200];
   DateTime now = rtc.now();
-  
-  snprintf(buffer, sizeof(buffer), "%02d:%02d:%02d, %.1f, %.3f, %.1f",
-         now.hour(), 
-         now.minute(), 
-         now.second(),
-         tempReader.temperature(), 
-         //pH.read_ph(),
-         depthReader.depth(),
-         depthReader.pressure());
 
- if (isSDcardReady) {
-  if (researchFile) {
-    researchFile.println(buffer);
-    //Serial.println(buffer);
-    researchFile.flush();
-    delay(1500);
-    // This delay is to limit how many data points we receive: we don't need it to read more often than this //
+  snprintf(buffer, sizeof(buffer), "%02d:%02d:%02d, %.1f, %.3f, %.1f",
+           now.hour(),
+           now.minute(),
+           now.second(),
+           tempReader.temperature(),
+           //pH.read_ph(),
+           depthReader.depth(),
+           depthReader.pressure());
+
+  if (isSDcardReady) {
+    if (researchFile) {
+      researchFile.println(buffer);
+      Serial.println(buffer);
+      researchFile.flush();
+      delay(330);
+      // This delay is to limit how many data points we receive: we don't need it to read more often than this //
     }
   }
   researchFile.close();
@@ -131,8 +132,8 @@ void startupSensors() {  //*****************************************************
   /*if (!pH.begin()) {
     Serial.println("PH sensor problem.");
     delay(500);
-  }*/ 
-    if (!SD.begin(SDcardPIN)) {
+    }*/
+  if (!SD.begin(SDcardPIN)) {
     Serial.println("Failure to connect to SD card");
     while (1);
   }
@@ -170,7 +171,7 @@ void setup() {  //**************************************************************
   }
   if (rtc.lostPower()) {
     Serial.println("RTC lost power, let's set the time!");
-    rtc.adjust(DateTime(2026, 5, 16, 5, 0, 0));
+    rtc.adjust(DateTime(2026, 5, 18, 19, 1, 0));
   }
 
   //SD Card
@@ -179,19 +180,19 @@ void setup() {  //**************************************************************
   pinMode(SDcardPIN, OUTPUT);
   //Serial.print("Initializing SD card... ");
 
-  Serial.println("card initialized. THIS IS A NEW TEST RUN!! 4 16 26");
+  Serial.println("card initialized. THIS IS A NEW TEST RUN!! 5 18 26");
   SetResearchFileName();
 
   researchFile = SD.open("Research.txt", FILE_WRITE);
   researchFile.println("");
-  
+
   DateTime now = rtc.now();
   String yearStr = (now.year() < 10 ? "0" : "") + String(now.year(), DEC);
   String monthStr = (now.month() < 10 ? "0" : "") + String(now.month(), DEC);
   String dayStr = (now.day() < 10 ? "0" : "") + String(now.day(), DEC);
   String formattedDate = monthStr + dayStr + yearStr;
   researchFile.print(formattedDate);
-  researchFile.flush();                                                 
+  researchFile.flush();
   researchFile.println("");
   researchFile.print("");
   Serial.println(formattedDate);
@@ -202,16 +203,16 @@ void setup() {  //**************************************************************
 }
 
 void loop() { //**************************************************************************
-  
+
   /*if (Serial.available() > 0) {
     user_bytes_received = Serial.readBytesUntil('\n', user_data, sizeof(user_data) - 1);
     user_data[user_bytes_received] = '\0';
-  }
-  if (user_bytes_received) {
+    }
+    if (user_bytes_received) {
     parse_cmd(user_data);
     user_bytes_received = 0;
     memset(user_data, 0, sizeof(user_data));
-  }
+    }
   */
   OpenResearchFile();
   ReadAllSensors();

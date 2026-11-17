@@ -30,7 +30,7 @@ Surveyor_pH pH = Surveyor_pH(A0);
 MS5837 depthReader = MS5837(); //Depth Sensor
 TSYS01 tempReader = TSYS01(); //Temp Sensor
 
-#define SDcardPIN 10
+#define SDcardPIN 16
 #define NULL_SENSOR_VALUE -320000
 TSYS01 sensor; //Temp
 
@@ -102,7 +102,7 @@ void ReadAllSensors() {  //*****************************************************
       researchFile.println(buffer);
       Serial.println(buffer);
       researchFile.flush();
-      delay(330);
+      delay(1000);
       // This delay is to limit how many data points we receive: we don't need it to read more often than this //
     }
   }
@@ -115,28 +115,19 @@ void startupSensors() {  //*****************************************************
   depthReader.init();
 
   //print confirmation
-  if (tempReader.init()) {
-    Serial.println("All sensors are ready.");
-  } else {
-    Serial.println("failed from arduino side.");
-    while (!depthReader.init()) {
-      Serial.println("Depth sensor.");
-      delay(500);
-    }
-    while (!tempReader.init()) {
-      Serial.println("temp sensor.");
-      delay(500);
-    }
-    Serial.println("All sensors are ready.");
-  }
-  /*if (!pH.begin()) {
-    Serial.println("PH sensor problem.");
+  while (!depthReader.init()) {
+    Serial.println("Depth sensor.");
     delay(500);
-    }*/
-  if (!SD.begin(SDcardPIN)) {
-    Serial.println("Failure to connect to SD card");
-    while (1);
   }
+  while (!tempReader.init()) {
+    Serial.println("temp sensor.");
+    delay(500);
+  }
+  while (!SD.begin(SDcardPIN)) {
+    Serial.println("Failure to connect to SD card");
+    delay (500);
+  }
+  Serial.println("All sensors are ready.");
 }
 
 void SetResearchFileName() {//**************************************************************
@@ -151,17 +142,19 @@ void OpenResearchFile() {  //***************************************************
   if (researchFile) {
     isSDcardReady = true;
   }
+  Serial.println ("File open!");
 }
 
 void setup() {  //**************************************************************************
 
   Serial.begin(115200);
-  Serial.print("Arduino Initializing!!! ");
+  Serial.println("Arduino Initializing!!! ");
   researchFile.close();
 
   while (!Serial) {
     delay(10); // wait for serial port to connect. Needed for native USB port only
   }
+  Serial.println("Serial Monitor up");
 
   //RTC Setup
   if (! rtc.begin()) {
@@ -173,14 +166,20 @@ void setup() {  //**************************************************************
     Serial.println("RTC lost power, let's set the time!");
     rtc.adjust(DateTime(2026, 5, 18, 19, 1, 0));
   }
+  Serial.println("RTC works");
 
   //SD Card
   Wire.begin();
-  startupSensors();
-  pinMode(SDcardPIN, OUTPUT);
-  //Serial.print("Initializing SD card... ");
 
-  Serial.println("card initialized. THIS IS A NEW TEST RUN!! 5 18 26");
+  Serial.println("So. Wire.begin worked. lets try the SD Card pin.");
+  
+  pinMode(SDcardPIN, OUTPUT); //WTF
+
+  Serial.println ("So.. Let's try to start the sensors.");
+  startupSensors();
+  Serial.print("BOOM! Initializing SD card... ");
+
+  Serial.println("card initialized. THIS IS A NEW TEST RUN!! 10 30 26");
   SetResearchFileName();
 
   researchFile = SD.open("Research.txt", FILE_WRITE);
@@ -190,11 +189,10 @@ void setup() {  //**************************************************************
   String yearStr = (now.year() < 10 ? "0" : "") + String(now.year(), DEC);
   String monthStr = (now.month() < 10 ? "0" : "") + String(now.month(), DEC);
   String dayStr = (now.day() < 10 ? "0" : "") + String(now.day(), DEC);
-  String formattedDate = monthStr + dayStr + yearStr;
+  String formattedDate = monthStr + "/" + dayStr + "/" + yearStr;
   researchFile.print(formattedDate);
   researchFile.flush();
   researchFile.println("");
-  researchFile.print("");
   Serial.println(formattedDate);
   Serial.flush();
   Serial.println("");
@@ -212,8 +210,8 @@ void loop() { //****************************************************************
     parse_cmd(user_data);
     user_bytes_received = 0;
     memset(user_data, 0, sizeof(user_data));
-    }
-  */
+    }*/
+
   OpenResearchFile();
   ReadAllSensors();
 
